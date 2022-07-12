@@ -3,22 +3,18 @@
 import os
 import sys
 import time
-import random
+import socket
 import numpy as np
-import pandas as pd
-import numpy as np
-import Resolver as res
 import tensorflow as tf
-import DBController as db
 from keras.layers import LSTM
 from keras.models import Sequential
 from keras.layers.core import Dense
 from keras.optimizers import RMSprop
 
 
-class LSTMpy():
+class Affinis():
 
-    def __init__(self, domain):
+    def __init__(self, domain, genAmt, subdomainFile):
         self.domain = domain
         self.step_length = 1 # The step length we take to get our samples from our corpus
         self.epochs = 100 # Number of times we train on our full data
@@ -29,8 +25,8 @@ class LSTMpy():
         self.load_model = False # Enable loading model from disk
         self.store_model = True # Store model to disk after training
         self.verbosity = 1 # Print result for each epoch
-        self.gen_amount = 500 # How many to generate
-        self.input_path = os.path.realpath("./machina/data/names.txt")
+        self.gen_amount = genAmt # How many to generate
+        self.input_path = os.path.abspath(subdomainFile)
         self.input_names = []
         self.char2idx = None
         self.idx2char = None
@@ -41,7 +37,7 @@ class LSTMpy():
         self.sequences = []
         self.sequence = None
         self.dbController = db.DBController(self.domain)   # Custom Class for DB MGMT
-        self.res = res.Resolver()   # Custom class for DNS utilities
+        self.res = Resolver()   # Custom class for DNS utilities
 
     def main(self):
         print("[+] Starting LSTM Deep Learning Module..")
@@ -50,14 +46,10 @@ class LSTMpy():
         self.generate(model)
 
     def readList(self):
-        print('[+] Reading subdomains from DB:')
-        dbSubs = self.dbController.selectSubs()
-        for item in dbSubs:
-            self.input_names.append(item)
-        print('...')
-        print("DB Items: " + str(self.input_names))
-
-        #self.gen_amount = len(self.input_names)
+        print('[+] Reading subdomains from file:')
+        with open(self.input_path) as f:
+            for item in f:
+                self.input_names.append(item)
 
         #==================================================
         # Make it all to a long string
@@ -119,7 +111,7 @@ class LSTMpy():
 
         model.summary()
 
-         #===================================================
+        #===================================================
 
         if self.load_model: # Load model from disk if setting is True
             model.load_weights(self.model_path)
@@ -184,8 +176,19 @@ class LSTMpy():
                 resolve = self.res.resolveHost(name)
                 if "." + self.domain in name and resolve:   # ensure generated names are for the origin domain
                     print(resolve)
+
+
+class Resolver():
+
+    def resolveHost(self, subdomain):
+        try:
+            check = socket.gethostbyname(subdomain)
+            if check:
+                return ("[LSTM][HostExists] " + subdomain  + " => " + check)
+        except Exception as err:
+            exit
     
 
 if __name__ == "__main__":
-    generateSubs = LSTMpy(sys.argv[1])  # Pass domain as arg
+    generateSubs = LSTMpy(sys.argv[1], sys.argv[2], sys.argv[3])  # Pass domain, generation amount, and filePath
     generateSubs.main()
