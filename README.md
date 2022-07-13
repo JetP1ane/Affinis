@@ -1,6 +1,6 @@
 # Affinis
 
-A Recurrent Nueral Network SubDomain Discovery Tool
+A Recurrent Neural Network SubDomain Discovery Tool
 
 Affinis aims to find potentially hidden or forgotten subdomains through the use of Natural Language Processing and the Keras LSTM RNN API.
 It will read in a file of already discovered subdomains for the target and generate its own list of potential subdomains the target may have.
