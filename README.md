@@ -22,4 +22,4 @@ Command:
   - **python3 Affinis.py [domain] [number to generate] [path to existing subdomains file]**
   - **python3 Affinis.py google.com 500 /tmp/google_subs.txt**
   
-It can certainly take awhile to run if you run tensorflow off your CPU, but you can expedite things by configuring Keras for GPU: [GPU Integration](https://wandb.ai/authors/ayusht/reports/Using-GPUs-With-Keras-A-Tutorial-With-Code--VmlldzoxNjEyNjE)
+It can certainly take awhile to run if you run tensorflow off your CPU, but you can expedite things by configuring Keras for GPU: [GPU Integration](https://www.run.ai/guides/gpu-deep-learning/keras-gpu)
