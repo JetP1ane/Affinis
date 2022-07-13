@@ -14,6 +14,10 @@ I am by no means an expert on neural networks, but this project is my attempt to
 You can read some more specifics on the project on my blog: [Phoenix-sec.io](https://phoenix-sec.io)
 
 # To Run:
+
+Requirements Installation:
+  - **pip install -r requirements.txt**
+
 Command:
   - **python3 Affinis.py [domain] [number to generate] [path to existing subdomains file]**
   - **python3 Affinis.py google.com 500 /tmp/google_subs.txt**
