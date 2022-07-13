@@ -6,6 +6,10 @@ Affinis aims to find potentially hidden or forgotten subdomains through the use 
 It will read in a file of already discovered subdomains for the target and generate its own list of potential subdomains the target may have.
 It then verifies the existence of those subdomains with a quick DNS lookup and will ultimately tell you if it has made any discoveries.
 
+![running Affinis](https://github.com/Jetp1ane/Affinis/raw/master/images/run.PNG)
+
+![output Affinis](https://github.com/Jetp1ane/Affinis/raw/master/images/generated.png)
+
 I am by no means an experrt on neural networks, but this project is my attempt to learn. Expect it to grow and mold into something more sophisiticated.
 You can read some more specifics on the project on my blog: [Phoenix-sec.io](https://phoenix-sec.io)
 
