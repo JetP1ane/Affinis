@@ -7,11 +7,11 @@ import socket
 import colorama
 import numpy as np
 import tensorflow as tf
+from termcolor import colored
 from keras.layers import LSTM
 from keras.models import Sequential
 from keras.layers.core import Dense
 from keras.optimizers import RMSprop
-from termcolor import colored, cprint
 
 
 class Affinis():
@@ -38,17 +38,17 @@ class Affinis():
         self.num_chars = None
         self.sequences = []
         self.sequence = None
-        self.dbController = db.DBController(self.domain)   # Custom Class for DB MGMT
         self.res = Resolver()   # Custom class for DNS utilities
 
     def main(self):
-        print("[+] Starting LSTM Deep Learning Module..")
+        print(colored("[+] Starting LSTM Deep Learning Module..", "green") + "\n \
+            This can take some time")
         self.readList()
         model = self.trainModel()
         self.generate(model)
 
     def readList(self):
-        print('[+] Reading subdomains from file:')
+        print(colored('[+] Reading subdomains from file:', "green"))
         with open(self.input_path) as f:
             for item in f:
                 self.input_names.append(item)
@@ -134,7 +134,7 @@ class Affinis():
 
     def generate(self, model):
         new_names = []
-        print('{} new names are being generated'.format(self.gen_amount))
+        print('[+] {} new names are being generated..'.format(self.gen_amount))
 
         while len(new_names) < self.gen_amount:
             # Vectorize sequence for prediction
@@ -163,7 +163,7 @@ class Affinis():
                     if gen_name not in self.input_names + new_names:
                         new_names.append(gen_name.capitalize())
                 
-                if 0 == (len(new_names) % (self.gen_amount/ 10)):
+                if 0 == (len(new_names) % (self.gen_amount/ 10)) and format(len(new_names) != 0):
                     print('Generated {}'.format(len(new_names)))
 
 
@@ -202,7 +202,7 @@ if __name__ == "__main__":
                 python3 " + colored("Affinis.py google.com 1000 /tmp/google_subs.txt", "green"))
     else:
         domain = sys.argv[1]
-        generation_amt = sys.argv[2]
+        generation_amt = int(sys.argv[2])
         subdomainList = sys.argv[3]
 
         generateSubs = Affinis(domain, generation_amt, subdomainList)  # Pass domain, generation amount, and filePath
