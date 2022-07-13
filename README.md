@@ -6,7 +6,7 @@ Affinis aims to find potentially hidden or forgotten subdomains through the use 
 It will read in a file of already discovered subdomains for the target and generate its own list of potential subdomains the target may have.
 It then verifies the existence of those subdomains with a quick DNS lookup and will ultimately tell you if it has made any discoveries.
 
-![running Affinis](https://github.com/Jetp1ane/Affinis/tree/master/images/run.PNG?raw=true)
+![running Affinis][https://github.com/Jetp1ane/Affinis/tree/master/images/run.PNG?raw=true)
 
 ![running Affinis](https://github.com/Jetp1ane/Affinis/tree/master/images/generated.PNG?raw=true)
 
