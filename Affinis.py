@@ -4,12 +4,14 @@ import os
 import sys
 import time
 import socket
+import colorama
 import numpy as np
 import tensorflow as tf
 from keras.layers import LSTM
 from keras.models import Sequential
 from keras.layers.core import Dense
 from keras.optimizers import RMSprop
+from termcolor import colored, cprint
 
 
 class Affinis():
@@ -184,11 +186,24 @@ class Resolver():
         try:
             check = socket.gethostbyname(subdomain)
             if check:
-                return ("[LSTM][HostExists] " + subdomain  + " => " + check)
+                return (colored("[LSTM][HostExists] ", "green") + subdomain  + " => " + check)
         except Exception as err:
             exit
     
 
 if __name__ == "__main__":
-    generateSubs = LSTMpy(sys.argv[1], sys.argv[2], sys.argv[3])  # Pass domain, generation amount, and filePath
-    generateSubs.main()
+
+    colorama.init()
+
+    if sys.argv[1] == '-h' or not sys.argv[1] or \
+        not sys.argv[2] or not sys.argv[3]:
+        print("[+] To run: \n\r \
+             python3 " + colored("Affinis.py <domain.com> <amount-of-subs-to-generate> <filepath-to-existing-subdomains>", "green") + "\n\r \
+                python3 " + colored("Affinis.py google.com 1000 /tmp/google_subs.txt", "green"))
+    else:
+        domain = sys.argv[1]
+        generation_amt = sys.argv[2]
+        subdomainList = sys.argv[3]
+
+        generateSubs = Affinis(domain, generation_amt, subdomainList)  # Pass domain, generation amount, and filePath
+        generateSubs.main()
