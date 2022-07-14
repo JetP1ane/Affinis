@@ -13,6 +13,9 @@ It then verifies the existence of those subdomains with a quick DNS lookup and w
 I am by no means an expert on neural networks, but this project is my attempt to learn. Expect it to grow and mold into something more sophisiticated.
 You can read some more specifics on the project on my blog: [Phoenix-sec.io](https://phoenix-sec.io/2022/07/12/RNN-Subdomain-Discovery.html)
 
+**Keras RNN Documentation:**
+[Documentation](https://www.tensorflow.org/guide/keras/rnn)
+
 # To Run:
 
 Requirements Installation:
