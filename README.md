@@ -2,7 +2,7 @@
 
 A Recurrent Neural Network SubDomain Discovery Tool
 
-Affinis aims to find undiscovered or forgotten subdomains through the use of Natural Language Processing and the Keras LSTM RNN API.
+Affinis aims to find undiscovered or forgotten subdomains through the use of Natural Language Processing and the [Keras LSTM RNN API](https://www.tensorflow.org/guide/keras/rnn).
 It will read in a file of already discovered subdomains for the target and generate its own list of potential subdomains the target may have.
 It then verifies the existence of those subdomains with a quick DNS lookup and will ultimately tell you if it has made any discoveries.
 
@@ -12,9 +12,6 @@ It then verifies the existence of those subdomains with a quick DNS lookup and w
 
 I am by no means an expert on neural networks, but this project is my attempt to learn. Expect it to grow and mold into something more sophisiticated.
 You can read some more specifics on the project on my blog: [Phoenix-sec.io](https://phoenix-sec.io/2022/07/12/RNN-Subdomain-Discovery.html)
-
-**Keras RNN Documentation:**
-[Documentation](https://www.tensorflow.org/guide/keras/rnn)
 
 # To Run:
 
