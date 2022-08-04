@@ -1,33 +1,33 @@
 # Install instructions: pip install -U tensorflow, python -m pip show tensorflow
 
 import os
+import socket
 import sys
 import time
-import socket
+
 import colorama
 import numpy as np
-import tensorflow as tf
-from termcolor import colored
 from keras.layers import LSTM
-from keras.models import Sequential
 from keras.layers.core import Dense
+from keras.models import Sequential
 from keras.optimizers import RMSprop
+from termcolor import colored
 
 
 class Affinis():
 
     def __init__(self, domain, genAmt, subdomainFile):
         self.domain = domain
-        self.step_length = 1 # The step length we take to get our samples from our corpus
-        self.epochs = 100 # Number of times we train on our full data
-        self.batch_size = 32 # Data samples in each training step
-        self.latent_dim = 32 # Size of our LSTM
-        self.dropout_rate = 0.2 # Regularization with dropout
-        self.model_path = os.path.realpath('./machina/sub_gen_model.h5') # Location for the model
-        self.load_model = False # Enable loading model from disk
-        self.store_model = True # Store model to disk after training
-        self.verbosity = 1 # Print result for each epoch
-        self.gen_amount = genAmt # How many to generate
+        self.step_length = 1  # The step length we take to get our samples from our corpus
+        self.epochs = 100  # Number of times we train on our full data
+        self.batch_size = 32  # Data samples in each training step
+        self.latent_dim = 32  # Size of our LSTM
+        self.dropout_rate = 0.2  # Regularization with dropout
+        self.model_path = os.path.realpath('./machina/sub_gen_model.h5')  # Location for the model
+        self.load_model = False  # Enable loading model from disk
+        self.store_model = True  # Store model to disk after training
+        self.verbosity = 1  # Print result for each epoch
+        self.gen_amount = genAmt  # How many to generate
         self.input_path = os.path.abspath(subdomainFile)
         self.input_names = []
         self.char2idx = None
@@ -38,7 +38,7 @@ class Affinis():
         self.num_chars = None
         self.sequences = []
         self.sequence = None
-        self.res = Resolver()   # Custom class for DNS utilities
+        self.res = Resolver()  # Custom class for DNS utilities
 
     def main(self):
         print(colored("[+] Starting LSTM Deep Learning Module..", "green") + "\n \
@@ -53,7 +53,7 @@ class Affinis():
             for item in f:
                 self.input_names.append(item)
 
-        #==================================================
+        # ==================================================
         # Make it all to a long string
         self.concat_names = '\n'.join(self.input_names).lower()
 
@@ -73,7 +73,6 @@ class Affinis():
         print('[+] Number of names: ', len(self.input_names))
         print('[+] Longest name: ', self.max_sequence_length)
 
-
     def trainModel(self):
         next_chars = []
 
@@ -82,14 +81,14 @@ class Affinis():
             self.sequences.append(self.concat_names[i: i + self.max_sequence_length])
             next_chars.append(self.concat_names[i + self.max_sequence_length])
 
-        num_sequences = len(self.sequences) # number of sequences
+        num_sequences = len(self.sequences)  # number of sequences
 
         print('Number of sequences:', num_sequences)
         print('First 10 sequences and next chars:')
         for i in range(len(self.input_names)):
             print('X=[{}] y=[{}]'.replace('\n', ' ').format(self.sequences[i], next_chars[i]).replace('\n', ' '))
 
-        #===================================================
+        # ===================================================
         X = np.zeros((num_sequences, self.max_sequence_length, self.num_chars), dtype=bool)
         Y = np.zeros((num_sequences, self.num_chars), dtype=np.bool)
 
@@ -101,28 +100,29 @@ class Affinis():
         print('X shape: {}'.format(X.shape))
         print('Y shape: {}'.format(Y.shape))
 
-        #===================================================
+        # ===================================================
 
         model = Sequential()
-        model.add(LSTM(self.latent_dim, input_shape=(self.max_sequence_length, self.num_chars), recurrent_dropout=self.dropout_rate))
+        model.add(LSTM(self.latent_dim, input_shape=(self.max_sequence_length, self.num_chars),
+                       recurrent_dropout=self.dropout_rate))
         model.add(Dense(units=self.num_chars, activation='softmax'))
 
         optimizer = RMSprop(lr=0.01)
         model.compile(loss='categorical_crossentropy',
-                    optimizer=optimizer)
+                      optimizer=optimizer)
 
         model.summary()
 
-        #===================================================
+        # ===================================================
 
-        if self.load_model: # Load model from disk if setting is True
+        if self.load_model:  # Load model from disk if setting is True
             model.load_weights(self.model_path)
         else:
             start = time.time()
             print('Start training for {} epochs'.format(self.epochs))
             history = model.fit(X, Y, epochs=self.epochs, batch_size=self.batch_size, verbose=self.verbosity)
             end = time.time()
-            print('Finished training - time elapsed:', (end - start)/60, 'min')
+            print('Finished training - time elapsed:', (end - start) / 60, 'min')
         if self.store_model:
             print('Storing model at:', self.model_path)
             model.save(self.model_path)
@@ -152,20 +152,19 @@ class Affinis():
             # New line means we have a new name
             if next_char == '\n':
                 gen_name = [name for name in self.sequence.split('\n')][1]
-                
+
                 # Never start name with two identical chars, could probably also
                 if len(gen_name) > 2 and gen_name[0] == gen_name[1]:
                     gen_name = gen_name[1:]
-                
+
                 # Discard all names that are too short
                 if len(gen_name) > 2:
                     # Only allow new and unique names
                     if gen_name not in self.input_names + new_names:
                         new_names.append(gen_name.capitalize())
-                
-                if 0 == (len(new_names) % (self.gen_amount/ 10)) and format(len(new_names) != 0):
-                    print('Generated {}'.format(len(new_names)))
 
+                if 0 == (len(new_names) % (self.gen_amount / 10)) and format(len(new_names) != 0):
+                    print('Generated {}'.format(len(new_names)))
 
         print_first_n = self.gen_amount
         results = []
@@ -173,10 +172,10 @@ class Affinis():
         for name in new_names[:print_first_n]:
             print("[LSTM][Generated][Unvalidated]: " + name)
         for name in new_names[:print_first_n]:
-            if name not in results: # Weed out the dupes
+            if name not in results:  # Weed out the dupes
                 results.append(name)
                 resolve = self.res.resolveHost(name)
-                if "." + self.domain in name and resolve:   # ensure generated names are for the origin domain
+                if "." + self.domain in name and resolve:  # ensure generated names are for the origin domain
                     print(resolve)
 
 
@@ -186,19 +185,20 @@ class Resolver():
         try:
             check = socket.gethostbyname(subdomain)
             if check:
-                return (colored("[LSTM][HostExists] ", "green") + subdomain  + " => " + check)
+                return (colored("[LSTM][HostExists] ", "green") + subdomain + " => " + check)
         except Exception as err:
             exit
-    
+
 
 if __name__ == "__main__":
 
     colorama.init()
 
     if sys.argv[1] == '-h' or not sys.argv[1] or \
-        not sys.argv[2] or not sys.argv[3]:
+            not sys.argv[2] or not sys.argv[3]:
         print("[+] To run: \n\r \
-             python3 " + colored("Affinis.py <domain.com> <amount-of-subs-to-generate> <filepath-to-existing-subdomains>", "green") + "\n\r \
+             python3 " + colored(
+            "Affinis.py <domain.com> <amount-of-subs-to-generate> <filepath-to-existing-subdomains>", "green") + "\n\r \
                 python3 " + colored("Affinis.py google.com 1000 /tmp/google_subs.txt", "green"))
     else:
         domain = sys.argv[1]
