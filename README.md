@@ -10,7 +10,7 @@ It then verifies the existence of those subdomains with a quick DNS lookup and w
 
 ![running Affinis](https://github.com/Jetp1ane/Affinis/raw/master/images/generated.png)
 
-I am by no means an expert on neural networks, but this project is my attempt to learn. Expect it to grow and mold into something more sophisiticated.
+Expect this to grow and mold into something more sophisiticated.
 You can read some more specifics on the project on my blog: [Phoenix-sec.io](https://phoenix-sec.io/2022/07/12/RNN-Subdomain-Discovery.html)
 
 # To Run:
